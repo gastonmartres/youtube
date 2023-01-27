@@ -15,7 +15,7 @@ Todo eso se puede realizar utilizando imágenes base.
 
 Docker, Podman, Cri-o, LXD
 
-## QUE ES UNA IMAGEN BASE
+## Que es una imágen base
 
 Una imagen base de contenedores es el template o plantilla que vamos a usar como punto de partida para poder ejecutar nuestro contenedor.
 
@@ -29,7 +29,7 @@ Estas capas o layers son las que van a ser agregadas al contenedor cuando vayamo
 
 La ventaja de usar capas es que, cuando hacemos una modificación a dicha capa, solo se ve afectada esa capa y no todo el resto del contenedor, por lo que actualizar el contenedor es relativamente rápido y simple.
 
-## CUALES SON LAS VENTAJAS DE UTILIZAR CONTENEDORES?
+## Cuales son las ventajas de utilizar contenedores
 
 Las ventajas son muchas en comparación a utilizar VM tradicionales:
 
@@ -38,7 +38,7 @@ Las ventajas son muchas en comparación a utilizar VM tradicionales:
 - **Actualizables**: es mas fácil actualizar un contenedor que todo un sistema operativo completo.
 - **Eficientes**: le da al desarrollador, devop, sre, etc un entorno seguro y practico para desarrollar o probar software.
 
-## COMO CREAMOS UN CONTENEDOR
+## Como creamos un contenedor
 
 La forma correcta de crear un contenedor seria utilizando un archivo `Dockerfile`.
 
@@ -57,3 +57,5 @@ En este ejemplo vemos lo siguiente:
 **FROM**: nombre de la imagen base que vamos a utilizar
 **ENV**: indicamos que vamos a utilizar una variable de entorno que se llama **MYVAR** y que su contenido es **supercalifragilistico**.
 **COPY**: copiamos el archivo `index.html` a la carpeta `/usr/local/apache2/htdocs/` dentro del contenedor.
+
+Más adelante vamos a poder practicar mejor lo que estamos viendo en este ejemplo.
