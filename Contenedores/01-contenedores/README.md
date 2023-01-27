@@ -1,4 +1,4 @@
-## QUE ES UN CONTENEDOR
+## Que es un Contenedor
 
 Los contenedores son una forma de virtualización que aprovecha el kernel del sistema operativo subyacente, sin tener la necesidad de virtualizar una maquina completa.
 
