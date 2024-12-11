@@ -1,12 +1,14 @@
 #!/bin/bash
 # ========[ INSTALL RKE2 ]========
-# Instalación RKE2 versión SERVER
+# Instalación RKE2 versión AGENT
 #
 # https://youtube.com/@gastonmartres
 #
 
 # FQDN o nombre dns desde el cual acceder a rancher.
 FQDN="rancher.example.com"
+# Reemplazar por la IP del SERVER
+SERVERIP="0.0.0.0"
 
 # Actualizamos el sistema operativo
 zypper refresh -y && zypper update -y
@@ -28,18 +30,15 @@ mkdir -p /etc/rancher/rke2
 #[ SERVER ]
 # Creamos el archivo de configuración que va a utilizar rke2-server
 cat <<EOF | tee /etc/rancher/rke2/config.yaml
+server: https://${SERVERIP}:9345
 write-kubeconfig-mode: "0644"
-etcd-snapshot-schedule-cron: "*/6 * * *"
-etcd-snapshot-retention: 56
 token: "66ae955cbc46dd1f8d672be858b5f015"
 tls-san:
   - "${FQDN}"
-cni: 
-  - canal
 EOF
 
 # Bajamos la ultima version de RKE2 y lo ejecutamos
-curl -sfL https://get.rke2.io | sh -
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
 
-# Habilitamos el servicio de rke2-server y lo iniciamos.
-systemctl enable --now rke2-server
+# Habilitamos el servicio de rke2-agent y lo iniciamos.
+systemctl enable --now rke2-agent

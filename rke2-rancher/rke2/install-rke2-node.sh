@@ -1,12 +1,14 @@
 #!/bin/bash
 # ========[ INSTALL RKE2 ]========
-# Instalación RKE2 versión SERVER
+# Instalación RKE2 versión NODE
 #
 # https://youtube.com/@gastonmartres
 #
 
 # FQDN o nombre dns desde el cual acceder a rancher.
 FQDN="rancher.example.com"
+# Reemplazar por la IP del SERVER
+SERVERIP="0.0.0.0"
 
 # Actualizamos el sistema operativo
 zypper refresh -y && zypper update -y
@@ -16,7 +18,7 @@ zypper refresh -y && zypper update -y
 systemctl stop firewalld
 systemctl disable firewalld
 
-# Instalamos los paquetes necesarios.
+# Instalamos los paquetes necesarios
 # Aca se instala open-vm-tools para VM en VMWare
 # Para VM en Proxmox se puede instalar qemu-guest-agent.
 zypper install -y docker open-vm-tools open-iscsi
@@ -28,14 +30,11 @@ mkdir -p /etc/rancher/rke2
 #[ SERVER ]
 # Creamos el archivo de configuración que va a utilizar rke2-server
 cat <<EOF | tee /etc/rancher/rke2/config.yaml
+server: https://${SERVERIP}:9345
 write-kubeconfig-mode: "0644"
-etcd-snapshot-schedule-cron: "*/6 * * *"
-etcd-snapshot-retention: 56
 token: "66ae955cbc46dd1f8d672be858b5f015"
 tls-san:
   - "${FQDN}"
-cni: 
-  - canal
 EOF
 
 # Bajamos la ultima version de RKE2 y lo ejecutamos
