@@ -9,7 +9,7 @@
 FQDN="rancher.secura.net.ar"
 
 # Actualizamos el sistema operativo
-zypper refresh && zypper update
+zypper refresh && zypper update -y
 
 # Si estamos en una red propia, a las funciones de laboratorio
 # deshabilitamos el firewall.
