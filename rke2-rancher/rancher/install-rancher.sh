@@ -27,12 +27,12 @@ RANCHERPASS=${RANCHERPASS:-"changeme"}
 
 # Instalamos kubectl
 echo "[ Installing kubectl ]"
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 # Instalamos Helm
 echo "[ Installing Helm ]"
-curl -LO https://get.helm.sh/helm-$(curl -L -s https://get.helm.sh/helm-latest-version)-linux-amd64.tar.gz
+curl -sLO https://get.helm.sh/helm-$(curl -L -s https://get.helm.sh/helm-latest-version)-linux-amd64.tar.gz
 tar zxvf helm-*-linux-amd64.tar.gz
 sudo install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
 
