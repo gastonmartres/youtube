@@ -5,15 +5,21 @@
 #
 
 if [ ! -f /etc/rancher/rke2/rke2.yaml ];then
-    echo "Please run this after installing RKE2".
-    exit 1
+  echo "Please run this script after installing RKE2".
+  exit 1
 fi
+
+if [ $USER != "root" ];then
+  echo "Please run as root"
+  exit 1
+fi
+
 export KUBECONFIG="/etc/rancher/rke2/rke2.yaml"
 # FQDN es el mismo que configuramos en la instalacion de RKE2
-FQDN="rancher.example.com"
+FQDN=${FQDN:-"rancher.example.com"}
 
 # Password que vamos a utilizar para loguear a rancher.
-KUBEPASS="changeme"
+RANCHERPASS=${RANCHERPASS:-"changeme"}
 
 # Instalamos kubectl
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -46,5 +52,5 @@ kubectl  --kubeconfig=/etc/rancher/rke2/rke2.yaml  get pods --namespace cert-man
 helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
   --set hostname=${FQDN} \
-  --set bootstrapPassword=${KUBEPASS} \
+  --set bootstrapPassword=${RANCHERPASS} \
   --set global.cattle.psp.enabled=false

@@ -6,7 +6,7 @@
 #
 
 # FQDN o nombre dns desde el cual acceder a rancher.
-FQDN="rancher.example.com"
+FQDN=${FQDN:-"rancher.example.com"}
 
 # Actualizamos el sistema operativo
 zypper refresh -y && zypper update -y
