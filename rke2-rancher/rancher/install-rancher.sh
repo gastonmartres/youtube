@@ -1,7 +1,11 @@
 #!/bin/bash
 #=====[ INSTALL RANCHER ]=====
 #
-# La instalacion de rancher se debe hacer desde un host que tenga kubectl y helm instalado
+# A favor del laboratorio, vamos a instalar rancher desde el SERVER de RKE2.
+# 
+# ATENCION: Si recien se terminó de instalar RKE2,
+# hay que dejar unos minutos hasta que termine de bajar
+# todos los contenedores necesarios.
 #
 
 if [ ! -f /etc/rancher/rke2/rke2.yaml ];then
