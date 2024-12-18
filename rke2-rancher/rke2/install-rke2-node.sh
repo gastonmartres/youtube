@@ -11,7 +11,7 @@ FQDN=${FQDN:-"rancher.example.com"}
 SERVERIP=${SERVERIP:-"0.0.0.0"}
 
 # Actualizamos el sistema operativo
-zypper refresh -y && zypper update -y
+zypper refresh && zypper update -y
 
 # Si estamos en una red propia, a las funciones de laboratorio
 # deshabilitamos el firewall.

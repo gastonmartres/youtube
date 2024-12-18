@@ -11,7 +11,7 @@ FQDN=${FQDN:-"rancher.example.com"}
 SERVERIP=${SERVERIP:-"0.0.0.0"}
 
 # Actualizamos el sistema operativo
-zypper refresh -y && zypper update -y
+zypper refresh && zypper update -y
 
 # Si estamos en una red propia, a las funciones de laboratorio
 # deshabilitamos el firewall.
@@ -35,6 +35,8 @@ write-kubeconfig-mode: "0644"
 token: "66ae955cbc46dd1f8d672be858b5f015"
 tls-san:
   - "${FQDN}"
+node-label:
+  - "node-role.kubernetes.io/worker=true"
 EOF
 
 # Bajamos la ultima version de RKE2 y lo ejecutamos
