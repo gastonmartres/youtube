@@ -1,29 +1,36 @@
-# Instalacion de RKE2 Server
+# Instalación de RKE2 Server
 
-El archivo de configuracion principal de rke2 es `config.yaml`.
-En las siguientes lineas vamos a ver los distintos pasos y configuraciones que necesitamos para levantar nuestro cluster de **RKE2**.
+El archivo de configuración principal de RKE2 es `config.yaml`.
+En las siguientes líneas veremos los distintos pasos y configuraciones necesarios para desplegar nuestro clúster de **RKE2**.
 
-## config.yaml
+## Archivo config.yaml
 
-La ubicacion y el archivo de configuracion para rke2: 
+La ubicación del archivo de configuración para RKE2 es:
 
-```/etc/rancher/rke2/config.yaml```
+```
+/etc/rancher/rke2/config.yaml
+```
 
 ## Token
-Generar el token que vamos a usar en la configuracion:
 
-```head -c 16 /dev/urandom | sha256sum | awk '{print $1}'```
+Generar el token que utilizaremos en la configuración:
 
-Esto nos va a dar algo similar a lo siguiente:
+```
+head -c 16 /dev/urandom | sha256sum | awk '{print $1}'
+```
+
+Este comando nos dará un resultado similar al siguiente:
 
 ```
 $ head -c 16 /dev/urandom | sha256sum | awk '{print $1}'
 dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c
 ```
-Copiamos la cadena de texto y la guardamos en algun editor de texto para usarla mas adelante.
+
+Copiamos la cadena de texto y la guardamos en un editor para utilizarla más adelante.
 
 ## Configuración
-Ejemplo del archivo config.yaml que utilizamos en el video, el que podemos abrir con `vim`, `nano`, o el editor que tengas a mano:
+
+Ejemplo del archivo config.yaml utilizado en el video. Se puede editar con `vim`, `nano` o cualquier editor de texto disponible:
 
 ```
 write-kubeconfig-mode: "0644"
@@ -32,31 +39,37 @@ etcd-snapshot-retention: 56
 token: "dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c"
 tls-san:
   - "rancher.example.com"
-cni: 
+cni:
   - canal
 ```
 
-Recordá reemplazar el token `dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c` por el token que generaste en el paso anterior.
+Recuerda reemplazar el token `dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c` por el token generado en el paso anterior.
 
-## Descargar rke2 e iniciar el servicio
+## Descargar RKE2 e iniciar el servicio
+
 Comando de curl para descargar el servidor de RKE2:
 
-```curl -sfL https://get.rke2.io | sh -```
+```
+curl -sfL https://get.rke2.io | sh -
+```
 
-Si queremos instalar RKE2 en modo AGENTE:
+Para instalar RKE2 en modo AGENTE:
 
-```curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -```
+```
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+```
 
-Una vez que tenemos descargado **RKE2**, entonces iniciamos el servicio con el siguiente comando:
+Una vez descargado **RKE2**, iniciamos el servicio con el siguiente comando:
 
-`systemctl enable --now rke2-server`
+```
+systemctl enable --now rke2-server
+```
 
-Tengan en cuenta que este proceso puede tardar bastante en funcion de la velocidad de internet, la maquina donde está corriendo, etc.
-
+Nota: Este proceso puede tardar dependiendo de la velocidad de internet y el rendimiento de la máquina.
 
 ## Kubectl
 
-Para poder administrar nuestro cluster de rke2/k8s vamos a necesitar una herramienta llamada `kubectl`.
+Para administrar nuestro clúster de RKE2/Kubernetes necesitaremos la herramienta `kubectl`.
 
 Instalar el binario de *kubectl*:
 
@@ -65,22 +78,31 @@ curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stab
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-Una vez que terminamos de instalar el binario de `kubectl`, podemos hacer una pruebas basicas, pero primero debemos configurar la variable de entorno **KUBECONFIG**.
-La variable de entorno **KUBECONFIG** se utiliza en Kubernetes para especificar la ubicación de uno o más archivos de configuración (normalmente llamados config) que contienen las credenciales y la información necesaria para acceder a un clúster.
+Una vez instalado el binario, debemos configurar la variable de entorno **KUBECONFIG**.
 
-Para esto vamos a hacer lo siguiente, ya sabiendo que el archivo que necesitamos se encuentra en `/etc/rancher/rke2/rke2.yaml`.
-Este archivo se genera automaticamente al finalizar la instalacion de `rke2-server`.
+La variable **KUBECONFIG** se utiliza en Kubernetes para especificar la ubicación de archivos de configuración que contienen las credenciales e información necesarias para acceder al clúster.
+
+Sabemos que el archivo necesario se encuentra en:
+
+```
+/etc/rancher/rke2/rke2.yaml
+```
+
+Este archivo se genera automáticamente al finalizar la instalación de `rke2-server`.
+
+Configuramos la variable de entorno:
 
 ```
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 ```
 
-Una vez que ya tenemos declarada la variable de entorno **KUBECONFIG**, entonces podemos hacer pruebas contra nuestro cluster.
-El comando mas simple que podemos correr va a ser: 
+Ahora podemos realizar pruebas contra nuestro clúster. Por ejemplo:
 
-`kubectl get nodes`
+```
+kubectl get nodes
+```
 
-Este comando nos da como resultado un listado de nodos, que en nuestro caso será de uno solo:
+Este comando mostrará la lista de nodos. En nuestro caso será uno solo:
 
 ```
 vm-leap-rke2-01:~ # kubectl get nodes
@@ -88,13 +110,15 @@ NAME              STATUS   ROLES                       AGE   VERSION
 vm-leap-rke2-01   Ready    control-plane,etcd,master   14d   v1.30.7+rke2r1
 ```
 
-Tambien podriamos ver los pods que están corriendo en el cluster con el comando:
+También podemos listar los pods en ejecución:
 
-`kubectl get pods -A`
+```
+kubectl get pods -A
+```
 
-Cuidado con el modificacion `-A` en un cluster con muchos pods corriendo, ya que trae todos los pods, no solo los del `namespace` actual.
+Nota: El modificador `-A` muestra todos los pods en todos los namespaces, lo cual puede generar una lista extensa si el clúster tiene muchos pods en ejecución.
 
-Un ejemplo del comando seria el siguiente:
+Ejemplo:
 
 ```
 vm-leap-rke2-01:~ # kubectl get pods -A
@@ -120,3 +144,4 @@ kube-system   rke2-metrics-server-75866c5bb5-t6f62                   1/1     Run
 kube-system   rke2-snapshot-controller-577cdd5b98-zhjhm              1/1     Running     1 (104s ago)   14d
 kube-system   rke2-snapshot-validation-webhook-855f5f7d76-kvswf      1/1     Running     1 (104s ago)   14d
 ```
+
