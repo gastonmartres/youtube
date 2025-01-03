@@ -36,7 +36,7 @@ fi
 
 # Instalamos Helm
 echo "[ Installing Helm ]"
-if type -P kubectl >/dev/null 2>&1; then
+if type -P helm >/dev/null 2>&1; then
   echo "...helm already installed, skipping..."
 else
   curl -sLO https://get.helm.sh/helm-$(curl -L -s https://get.helm.sh/helm-latest-version)-linux-amd64.tar.gz
@@ -63,7 +63,7 @@ helm install cert-manager jetstack/cert-manager \
   --version v1.16.2
 
 # Chequeamos como viene la mano
-kubectl  --kubeconfig=/etc/rancher/rke2/rke2.yaml  get pods --namespace cert-manager
+kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml  get pods -n cert-manager
 
 # Instalamos rancher
 echo "[ Installing Rancher ]"
