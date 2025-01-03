@@ -192,8 +192,8 @@ node-label:
 
 Esta es una breve explicación del archivo de configuracion:
 
-`server`: El el nodo principal, basicamente el primer nodo que armamos en modo Server. Podemos utilizar una direccion IP o un nombre de DNS si es que tiene asignado uno.
-`write-kubeconfig-mode`: El modo octal o permisos que va a tener el archivo de configuracion de kubernetes. 
-`token`: El el token que configuramos en el primer Nodo. Sin este token, los agentes y nodos no se pueden unir al cluster.
-`tls-san`: Nombres de dominio adicionales que se agregaran al certificado que utiliza RKE2.
-`node-label`: Etiqueta que le podemos asignar al Nodo. No es obligatorio, pero es util para despues utilizarlo como Selector en los manifiestos de k8s.
+* `server`: El el nodo principal, basicamente el primer nodo que armamos en modo Server. Podemos utilizar una dirección IP o un nombre de DNS si es que tiene asignado uno.
+* `write-kubeconfig-mode`: El modo octal o permisos que va a tener el archivo de configuración de kubernetes. 
+* `token`: El token que configuramos en el primer Nodo lo vamos a utilizar acá. Sin este token, los agentes y nodos no se pueden unir al cluster.
+* `tls-san`: Nombres de dominio adicionales que se agregaran al certificado que utiliza RKE2.
+* `node-label`: Etiqueta que le podemos asignar al Nodo. No es obligatorio, pero es útil para despues utilizarlo como `selector` en los manifiestos de k8s.
