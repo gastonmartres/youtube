@@ -145,3 +145,55 @@ kube-system   rke2-snapshot-controller-577cdd5b98-zhjhm              1/1     Run
 kube-system   rke2-snapshot-validation-webhook-855f5f7d76-kvswf      1/1     Running     1 (104s ago)   14d
 ```
 
+# Agregar un nodo Agente de RKE2
+
+Hay que tener en cuenta que hay una diferencia entre Nodo Server y Nodo Agente en lo que respecta RKE2.
+
+Si vamos a agregar un Nodo Server, entonces hacemos que sea parte del plano de control (Control Plane) y tiene las siguientes caracteristicas:
+
+### Nodo Server
+* Administra el estado del clúster y realiza tareas de control.
+* Aloja los componentes del plano de control, como:
+    * API Server: Gestiona las solicitudes de la API.
+    * Controller Manager: Mantiene el estado deseado de los recursos.
+    * Scheduler: Asigna cargas de trabajo (pods) a los nodos disponibles.
+    * Etcd: Base de datos distribuida que almacena el estado del clúster.
+
+### Nodo Agente
+Un agente en RKE2 se refiere específicamente al nodo de trabajo (worker). Es un nodo que:
+
+* No aloja el plano de control.
+* Se conecta al nodo de control para recibir instrucciones.
+* Solo ejecuta aplicaciones en contenedores (pods) y gestiona la comunicación de red.
+
+### Resumen de Diferencias
+|Función	| Nodo de Control (Server)| Agente (Worker)|
+|-----------|:-----------------------:|:--------------:|
+|Rol principal	| Gestionar el estado del clúster.	| Ejecutar cargas de trabajo (pods).| 
+|Componentes	| Plano de control (API Server, etcd).	| Kubelet, container runtime, kube-proxy.|
+|Almacena estado?	| Sí, a través de etcd.	| No almacena el estado.| 
+|Responsabilidad	| Administración y orquestación.| 	Ejecución de aplicaciones.|
+
+
+## Archivo de Configuracion
+
+Asi como utilizamos un archivo de configuracion en el Nodo Server, para los Agentes vamos a utilizar un archivo de configuracion, en la misma ubicacion y nombre que el utilizado en el Nodo Server, pero con algunas diferencias:
+
+Ej:
+```
+server: https://192.168.0.71:9345
+write-kubeconfig-mode: "0644"
+token: "dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c"
+tls-san:
+  - "rancher.example.com"
+node-label:
+  - "node-role.kubernetes.io/worker=true"
+```
+
+Esta es una breve explicación del archivo de configuracion:
+
+`server`: El el nodo principal, basicamente el primer nodo que armamos en modo Server. Podemos utilizar una direccion IP o un nombre de DNS si es que tiene asignado uno.
+`write-kubeconfig-mode`: El modo octal o permisos que va a tener el archivo de configuracion de kubernetes. 
+`token`: El el token que configuramos en el primer Nodo. Sin este token, los agentes y nodos no se pueden unir al cluster.
+`tls-san`: Nombres de dominio adicionales que se agregaran al certificado que utiliza RKE2.
+`node-label`: Etiqueta que le podemos asignar al Nodo. No es obligatorio, pero es util para despues utilizarlo como Selector en los manifiestos de k8s.
