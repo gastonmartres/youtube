@@ -31,6 +31,7 @@ echo "Please write it down in a safe place. You will need this token when adding
 echo "---------------------------------------"
 echo "...Token: ${TOKEN}"
 echo "---------------------------------------"
+echo $TOKEN > /etc/rancher/rke2/rke2-token.txt
 
 #[ SERVER ]
 # Creamos el archivo de configuración que va a utilizar rke2-server
