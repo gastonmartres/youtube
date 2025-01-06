@@ -43,8 +43,6 @@ write-kubeconfig-mode: "0644"
 token: "${TOKEN}"
 tls-san:
   - "${FQDN}"
-node-label:
-  - "node-role.kubernetes.io/worker=true"
 EOF
 
 # Bajamos la ultima version de RKE2 y lo ejecutamos
