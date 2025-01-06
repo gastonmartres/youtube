@@ -26,7 +26,7 @@ systemctl enable --now docker
 mkdir -p /etc/rancher/rke2
 
 # Generamos un token random para usar en el archivo config.yaml
-TOKEN=$(head -c 16 /dev/urandom | sha256sum | awk '{print $1}')
+TOKEN=$(head -c 16 /dev/urandom | sha256sum | awk '{print $1}' | cut -b 32)
 echo "Please write it down in a safe place. You will need this token when adding AGENTS and NODES."
 echo "---------------------------------------"
 echo "...Token: ${TOKEN}"
