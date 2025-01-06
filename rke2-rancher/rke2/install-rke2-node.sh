@@ -7,8 +7,12 @@
 
 # FQDN o nombre dns desde el cual acceder a rancher.
 FQDN=${FQDN:-"rancher.example.com"}
+
 # Reemplazar por la IP del SERVER
 SERVERIP=${SERVERIP:-"0.0.0.0"}
+
+# Reemplazar por el token generado con install-rke2-server.sh
+TOKEN=${TOKEN:-"change-my-token"}
 
 # Actualizamos el sistema operativo
 zypper refresh && zypper update -y
@@ -32,7 +36,7 @@ mkdir -p /etc/rancher/rke2
 cat <<EOF | tee /etc/rancher/rke2/config.yaml
 server: https://${SERVERIP}:9345
 write-kubeconfig-mode: "0644"
-token: "66ae955cbc46dd1f8d672be858b5f015"
+token: "${TOKEN}"
 tls-san:
   - "${FQDN}"
 EOF
