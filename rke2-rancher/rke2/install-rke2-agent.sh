@@ -10,6 +10,10 @@ FQDN=${FQDN:-"rancher.example.com"}
 
 # Reemplazar por la IP del SERVER
 SERVERIP=${SERVERIP:-"0.0.0.0"}
+if [ -z ${SERVERIP} ] || [ ${SERVERIP} == "0.0.0.0" ];then
+  echo "Please define a valid SERVERIP value."
+  exit 1
+fi
 
 # Reemplazar por el token generado con install-rke2-server.sh
 TOKEN=${TOKEN:-"change-my-token"}
