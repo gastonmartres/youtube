@@ -186,8 +186,6 @@ write-kubeconfig-mode: "0644"
 token: "dc6801605649f15ff5fae878c6b8b8c0b783590c92d24b033a211229981da82c"
 tls-san:
   - "rancher.example.com"
-node-label:
-  - "node-role.kubernetes.io/worker=true"
 ```
 
 Esta es una breve explicación del archivo de configuracion:
@@ -197,3 +195,27 @@ Esta es una breve explicación del archivo de configuracion:
 * `token`: El token que configuramos en el primer Nodo lo vamos a utilizar acá. Sin este token, los agentes y nodos no se pueden unir al cluster.
 * `tls-san`: Nombres de dominio adicionales que se agregaran al certificado que utiliza RKE2.
 * `node-label`: Etiqueta que le podemos asignar al Nodo. No es obligatorio, pero es útil para despues utilizarlo como `selector` en los manifiestos de k8s.
+
+Una vez que tenemos el archivo de configuracion para el Agente, lo unico que nos queda es ejecutar el servicio:
+
+`systemctl enable --now rke2-agent`
+
+Tal cual como pasa con el Server, el proceso de inicio puede tardar unos minutos. Eso si, si está tardando mas de 5 minutos, entonces es posible que tengamos algun problema.
+Para eso, deberia ingresar desde otra maquina y podemos ver los logs de lo que está pasando ejecutando:
+
+`journalctl -xeu rke2-agent `
+
+Esto nos va a mostrar las ultimas lineas del log de `rke2-agent` y nos puede ayudar a ver cual es el problema.
+
+Este es un ejemplo de un cluster con varios nodos Agent:
+
+```
+vm-leap-rke2-01:~ # kubectl get nodes
+NAME              STATUS   ROLES                       AGE   VERSION
+vm-leap-rke2-01   Ready    control-plane,etcd,master   19h   v1.31.4+rke2r1
+vm-leap-rke2-02   Ready    <none>                      19h   v1.31.4+rke2r1
+vm-leap-rke2-03   Ready    <none>                      19h   v1.31.4+rke2r1
+vm-leap-rke2-04   Ready    <none>                      19h   v1.31.4+rke2r1
+vm-leap-rke2-05   Ready    <none>                      16h   v1.31.4+rke2r1
+```
+
