@@ -1,3 +1,3 @@
 # Servidor de Minecraft bajo Docker
 
-```docker build -t rapid-rodent:latest```
+```docker build -t rapid-rodent:latest .```
