@@ -18,5 +18,10 @@ Si tienes sugerencias o mejoras para los archivos aquí incluidos, no dudes en e
 ## Contacto
 Para cualquier consulta o comentario, puedes contactarme a través de los comentarios en los videos o directamente en mi canal de YouTube.
 
-¡Gracias por visitar este repositorio y apoyar el canal!
+- YouTube: [@gastonmartres](https://youtube.com/@gastonmartres)
+- Instagram: [@gastonmartres](https://www.instagram.com/gastonmartres)
+- X: [@GastonMartres](https://x.com/GastonMartres)
 
+Si quieres colaborar, puedes comprarme un Cafecito en [Cafecito.app](https://cafecito.app/gmartres).
+
+¡Gracias por visitar este repositorio y apoyar el canal!
