@@ -285,7 +285,7 @@ Este namespace es el que utilizará **Rancher** de base para instalarse.
 
 Ahora vamos a instalar **cert-manager**.
 
-Cert-manager es una herramienta de Kubernetes que automatiza la gestión de certificados TLS/SSL dentro de un clúster. Permite emitir, renovar y gestionar certificados de forma automática a partir de diversas autoridades de certificación (CA), como Let's Encrypt, así como gestionar la validación de dominios y asegurar que los servicios en Kubernetes estén correctamente cifrados.
+**Cert-manager** es una herramienta de Kubernetes que automatiza la gestión de certificados TLS/SSL dentro de un clúster. Permite emitir, renovar y gestionar certificados de forma automática a partir de diversas autoridades de certificación (CA), como Let's Encrypt, así como gestionar la validación de dominios y asegurar que los servicios en Kubernetes estén correctamente cifrados.
 
 Ejecutamos los siguientes comandos:
 
@@ -309,11 +309,12 @@ kubectl get pods -n cert-manager
 
 Si vemos a todos los pods en estado `running` entonces **cert-manager** está funcionando.
 
-Ahora vamos a instalar **Rancher**.
+## Instalación de **Rancher**
 
-Primero vamos a exportar dos variables, **FQDN** y **RANCHERPASS**.
+Primero vamos a exportar dos variables, **$FQDN** y **$RANCHERPASS**.
 
 **FQDN**: es el nombre DNS con el cual vamos a acceder a **Rancher**. En nuestro caso `rancher.example.com`.
+
 **RANCHERPASS**: es el password que utilizaremos para ingresar la primera vez. En nuestro caso `changeme`.
 
 ```
