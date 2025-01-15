@@ -219,3 +219,117 @@ vm-leap-rke2-04   Ready    <none>                      19h   v1.31.4+rke2r1
 vm-leap-rke2-05   Ready    <none>                      16h   v1.31.4+rke2r1
 ```
 
+# Instalación de Rancher
+
+Ahora que ya tenemos RKE2 instalado, podemos hacer la instalacion de Rancher y para eso vamos a seguir los pasos a continuacion.
+
+## Preparación del ambiente
+
+Desde una maquina donde tengamos el cliente de Kubectl vamos tambien a instalar Helm.
+En nuestro caso, como estamos utilizando el laboratorio, lo vamos a hacer desde la maquina `vm-leap-rke2-01` y para eso vamos a loguearnos via ssh.
+
+`ssh root@vm-leap-rke2-01`
+
+Esto lo hacen con el nombre de la maquina que uds crearon.
+
+Si no tenemos instalado `kubectl` entonces lo instalamos:
+
+```
+curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+```
+
+Exportamos la variable **KUBECONFIG** con la configuración de nuestro cluster de RKE2 local:
+
+```
+export KUBECONFIG="/etc/rancher/rke2/rke2.yaml"
+```
+
+Una vez instalado `kubectl` entonces vamos a instalar **Helm**:
+
+```
+curl -sLO https://get.helm.sh/helm-$(curl -L -s https://get.helm.sh/helm-latest-version)-linux-amd64.tar.gz
+tar zxvf helm-*-linux-amd64.tar.gz
+install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
+```
+
+Podemos confirmar la instalación invocando `helm` y nos tiene que dar una salida similar a la siguiente: 
+
+```
+$ helm
+The Kubernetes package manager
+
+Common actions for Helm:
+
+- helm search:    search for charts
+- helm pull:      download a chart to your local directory to view
+- helm install:   upload the chart to Kubernetes
+- helm list:      list releases of charts
+
+[ CUT ]
+```
+
+Ahora que tenemos **Helm** instalado, agregamos el repo de **Rancher**:
+
+```
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+```
+
+Creamos el namespace que va a utilizar **Rancher**:
+
+```
+kubectl create namespace cattle-system
+```
+
+Este namespace es el que utilizará **Rancher** de base para instalarse.
+
+Ahora vamos a instalar **cert-manager**.
+
+Cert-manager es una herramienta de Kubernetes que automatiza la gestión de certificados TLS/SSL dentro de un clúster. Permite emitir, renovar y gestionar certificados de forma automática a partir de diversas autoridades de certificación (CA), como Let's Encrypt, así como gestionar la validación de dominios y asegurar que los servicios en Kubernetes estén correctamente cifrados.
+
+Ejecutamos los siguientes comandos:
+
+```
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.crds.yaml
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.16.2
+```
+
+Esto inicia la instalacion de **cert-manager** en nuestro cluster.
+
+Para ver como sigue el progreso, podemos chequear ejecutando el siguiente comando:
+
+```
+kubectl get pods -n cert-manager
+```
+
+Si vemos a todos los pods en estado `running` entonces **cert-manager** está funcionando.
+
+Ahora vamos a instalar **Rancher**.
+
+Primero vamos a exportar dos variables, **FQDN** y **RANCHERPASS**.
+
+**FQDN**: es el nombre DNS con el cual vamos a acceder a **Rancher**. En nuestro caso `rancher.example.com`.
+**RANCHERPASS**: es el password que utilizaremos para ingresar la primera vez. En nuestro caso `changeme`.
+
+```
+export FQDN="rancher.example.com"
+export RANCHERPASS="changeme"
+```
+
+Y ahora si, invocamos la instalación de **Rancher**: 
+
+```
+helm install rancher rancher-stable/rancher \
+  --namespace cattle-system \
+  --set hostname=${FQDN} \
+  --set bootstrapPassword=${RANCHERPASS} \
+  --set global.cattle.psp.enabled=false
+```
+
+Hay que tener en cuenta que la instalación puede tardar bastante dependiendo de varios factores, como ser la velocidad de internet, la maquina donde se está instalando **Rancher**, etc.
+
