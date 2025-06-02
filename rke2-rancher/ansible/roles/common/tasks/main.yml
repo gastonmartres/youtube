@@ -1,0 +1,32 @@
+# roles/common/tasks/main.yml
+- name: Update OS
+  tags: [common]
+  zypper:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Disable firewalld
+  tags: [common]
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: Install common packages
+  tags: [common]
+  zypper:
+    name:
+      - docker
+      - open-vm-tools
+      - open-iscsi
+      - qemu-guest-agent
+    state: present
+
+- name: Enable Docker
+  tags: [common]
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+

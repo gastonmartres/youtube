@@ -1,0 +1,36 @@
+- name: Install NFS server packages
+  zypper:
+    name:
+      - nfs-kernel-server
+      - nfs-utils
+    state: present
+  tags: [nfs_server]
+
+- name: Enable and start NFS server
+  systemd:
+    name: nfs-server
+    enabled: yes
+    state: started
+  tags: [nfs_server]
+
+- name: Create /nfs directory
+  file:
+    path: /nfs
+    state: directory
+    mode: '0777'
+  tags: [nfs_server]
+
+- name: Configure NFS export
+  blockinfile:
+    path: /etc/exports
+    block: |
+      /nfs 192.168.0.0/24(rw,no_root_squash,no_subtree_check)
+  tags: [nfs_server]
+
+- name: Reload NFS exports
+  command: exportfs -ra
+  tags: [nfs_server]
+
+- name: Ensure NFS server is listening
+  command: systemctl restart nfs-server
+  tags: [nfs_server]

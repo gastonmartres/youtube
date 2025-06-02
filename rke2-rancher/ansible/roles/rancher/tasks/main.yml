@@ -1,0 +1,63 @@
+- name: Set KUBECONFIG environment variable
+  tags: [rancher,ingress]
+  set_fact:
+    kubeconfig_path: "/etc/rancher/rke2/rke2.yaml"
+
+- name: Install kubectl
+  tags: [rancher]
+  shell: |
+    curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+  args:
+    creates: /usr/local/bin/kubectl
+
+- name: Install Helm
+  tags: [rancher]
+  shell: |
+    curl -sLO https://get.helm.sh/helm-$(curl -s https://get.helm.sh/helm-latest-version)-linux-amd64.tar.gz
+    tar zxvf helm-*-linux-amd64.tar.gz
+    install -o root -g root -m 0755 linux-amd64/helm /usr/local/bin/helm
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Add Rancher Helm repo
+  tags: [rancher]
+  command: helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+
+- name: Create cattle-system namespace
+  tags: [rancher]
+  ignore_errors: yes
+  command: kubectl create namespace cattle-system
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Install cert-manager CRDs
+  tags: [rancher]
+  shell: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.crds.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Add jetstack repo to Helm
+  tags: [rancher]
+  command: helm repo add jetstack https://charts.jetstack.io
+
+- name: Install Rancher via Helm
+  shell: >
+    helm install rancher rancher-stable/rancher
+    --namespace cattle-system
+    --set hostname={{ fqdn }}
+    --set bootstrapPassword={{ rancher_pass }}
+    --set global.cattle.psp.enabled=false
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [rancher]
+
+- name: Patch Rancher ingress to use ingressClassName nginx
+  shell: >
+    kubectl patch ingress rancher
+    -n cattle-system
+    --type merge
+    -p '{"spec":{"ingressClassName":"nginx"}}'
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [rancher,ingress]

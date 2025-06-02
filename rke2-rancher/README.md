@@ -285,7 +285,23 @@ Este namespace es el que utilizará **Rancher** de base para instalarse.
 
 Ahora vamos a instalar **cert-manager**.
 
-**Cert-manager** es una herramienta de Kubernetes que automatiza la gestión de certificados TLS/SSL dentro de un clúster. Permite emitir, renovar y gestionar certificados de forma automática a partir de diversas autoridades de certificación (CA), como Let's Encrypt, así como gestionar la validación de dominios y asegurar que los servicios en Kubernetes estén correctamente cifrados.
+**Cert-manager**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ es una herramienta de Kubernetes que automatiza la gestión de certificados TLS/SSL dentro de un clúster. Permite emitir, renovar y gestionar certificados de forma automática a partir de diversas autoridades de certificación (CA), como Let's Encrypt, así como gestionar la validación de dominios y asegurar que los servicios en Kubernetes estén correctamente cifrados.
 
 Ejecutamos los siguientes comandos:
 

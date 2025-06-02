@@ -1,0 +1,46 @@
+- name: Create RKE2 config directory
+  tags: [rke2_server]
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+
+- name: Generate RKE2 token
+  tags: [rke2_server]
+  shell: head -c 16 /dev/urandom | sha256sum | awk '{print $1}'
+  register: token_output
+
+- name: Save token to file
+  tags: [rke2_server]
+  copy:
+    dest: /etc/rancher/rke2/rke2-token.txt
+    content: "{{ token_output.stdout_lines[0].split(' ')[0] }}"
+
+- name: Set fact with token
+  tags: [rke2_server]
+  set_fact:
+    rke2_token: "{{ token_output.stdout_lines[0].split(' ')[0] }}"
+
+- name: Create config.yaml
+  tags: [rke2_server]
+  copy:
+    dest: /etc/rancher/rke2/config.yaml
+    content: |
+      write-kubeconfig-mode: "0644"
+      etcd-snapshot-schedule-cron: "*/6 * * *"
+      etcd-snapshot-retention: 56
+      token: "{{ rke2_token }}"
+      tls-san:
+        - "{{ fqdn }}"
+      cni:
+        - canal
+
+- name: Install RKE2 server
+  tags: [rke2_server]
+  shell: curl -sfL https://get.rke2.io | sh -
+
+- name: Enable and start rke2-server
+  tags: [rke2_server]
+  systemd:
+    name: rke2-server
+    enabled: yes
+    state: started

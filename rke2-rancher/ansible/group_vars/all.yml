@@ -1,0 +1,9 @@
+
+# Dominio completo que va a utilizar el servidor.
+fqdn: "{{ lookup('env', 'FQDN') | default('rancher.example.com', true) }}"
+# Contraseña por defecto.
+# CAMBIAR!
+rancher_pass: "{{ lookup('env', 'RANCHERPASS') | default('changeme', true) }}"
+# Dirección IP del nodo principical/servidor de RKE2/Rancher.
+server_ip: 192.168.0.71
+

@@ -1,0 +1,40 @@
+- name: Fetch RKE2 token from server
+  tags: [rke2_agent]
+  slurp:
+    src: /etc/rancher/rke2/rke2-token.txt
+  delegate_to: 192.168.0.71
+  run_once: true
+  register: server_token_file
+
+- name: Set fact with token
+  tags: [rke2_agent]
+  set_fact:
+    rke2_token: "{{ server_token_file.content | b64decode }}"
+
+- name: Create RKE2 config directory
+  tags: [rke2_agent]
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+
+- name: Create config.yaml
+  tags: [rke2_agent]
+  copy:
+    dest: /etc/rancher/rke2/config.yaml
+    content: |
+      server: https://{{ server_ip }}:9345
+      write-kubeconfig-mode: "0644"
+      token: "{{ rke2_token }}"
+      tls-san:
+        - "{{ fqdn }}"
+
+- name: Install RKE2 agent
+  tags: [rke2_agent]
+  shell: curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+
+- name: Enable and start rke2-agent
+  tags: [rke2_agent]
+  systemd:
+    name: rke2-agent
+    enabled: yes
+    state: started

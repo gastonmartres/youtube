@@ -1,0 +1,25 @@
+# ===========================================
+# INVENTARIO DE ANSIBLE PARA RKE2 + RANCHER
+# ===========================================
+#
+# Este es un laboratorio de ejemplo.
+# Por favor, ajustar a las direcciones correspondientes a su red.
+#
+# Nodo principal del clúster RKE2 (server)
+[rke2_server]
+192.168.0.71  # RKE2 server node
+
+# Nodos secundarios del clúster RKE2 (agentes)
+[rke2_agent]
+192.168.0.72  # RKE2 agent 1
+192.168.0.73   # RKE2 agent 2
+
+# Servidor NFS (opcional)
+[nfs_server]
+192.168.0.80  # NFS server for shared storage
+
+# Variables comunes a todos los hosts
+[all:vars]
+ansible_user=root
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3

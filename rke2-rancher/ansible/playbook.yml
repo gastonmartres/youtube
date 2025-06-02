@@ -1,0 +1,30 @@
+- name: Install RKE2 + Rancher
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Install RKE2 SERVER
+  hosts: rke2_server
+  become: true
+  roles:
+    - rke2_server
+
+- name: Install RKE2 AGENT
+  hosts: rke2_agent
+  become: true
+  roles:
+    - rke2_agent
+
+- name: Install Rancher
+  hosts: rke2_server
+  become: true
+  roles:
+    - rancher
+
+- name: Setup NFS Server
+  hosts: nfs_server
+  become: true
+  roles:
+    - common
+    - nfs_server
