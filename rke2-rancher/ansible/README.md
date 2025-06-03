@@ -1,6 +1,6 @@
 # Ansible RKE2 + Rancher + NFS Deployment
 
-Este proyecto automatiza la instalación de un clúster RKE2 (1 servidor + 2 agentes) y la instalación de Rancher, incluyendo un servidor NFS opcional para almacenamiento compartido.
+Este proyecto automatiza la instalación de un clúster RKE2 (3 servidor + 2 workers) y la instalación de Rancher, incluyendo un servidor NFS opcional para almacenamiento compartido.
 
 ---
 
@@ -12,9 +12,13 @@ Editá el archivo `inventory` para definir tus hosts:
 [rke2_server]
 192.168.0.71
 
-[rke2_agent]
+[rke2_node]
 192.168.0.72
-192.168.0.7
+192.168.0.73
+
+[rke2_agent]
+192.168.0.74
+192.168.0.75
 
 [nfs_server]
 192.168.0.80
@@ -45,19 +49,25 @@ En `group_vars/all.yml` podés definir:
 ansible-playbook -i inventory playbook.yml -l rke2_server
 ```
 
-### 2. Instalar los **nodos agentes**
+### 2. Instalar los **nodos**
+
+```bash
+ansible-playbook -i inventory playbook.yml -l rke2_node
+```
+
+### 3. Instalar los **nodos Workers**
 
 ```bash
 ansible-playbook -i inventory playbook.yml -l rke2_agent
 ```
 
-### 3. Instalar **Rancher**
+### 4. Instalar **Rancher**
 
 ```bash
 ansible-playbook -i inventory playbook.yml --tags rancher -l rke2_server
 ```
 
-### 4. (Opcional) Instalar servidor **NFS**
+### 5. (Opcional) Instalar servidor **NFS**
 
 ```bash
 ansible-playbook -i inventory playbook.yml -l nfs_server
@@ -71,6 +81,7 @@ Podés usar `--tags` para ejecutar partes del playbook:
 
 - `common`
 - `rke2_server`
+- `rke2_node`
 - `rke2_agent`
 - `rancher`
 - `nfs_server`
