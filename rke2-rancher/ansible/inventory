@@ -5,14 +5,23 @@
 # Este es un laboratorio de ejemplo.
 # Por favor, ajustar a las direcciones correspondientes a su red.
 #
+# Los nodos de rke2_server y rke2_nodes conforman
+# el quorum para tener un etcd de 3 miembros.
+#
+
 # Nodo principal del clúster RKE2 (server)
 [rke2_server]
 192.168.0.71  # RKE2 server node
 
-# Nodos secundarios del clúster RKE2 (agentes)
+# Nodos secundarios (etcd)
+[rke2_node]
+192.168.0.72
+192.168.0.73
+
+# Nodos workers del clúster RKE2 (agentes)
 [rke2_agent]
-192.168.0.72  # RKE2 agent 1
-192.168.0.73   # RKE2 agent 2
+192.168.0.74  # RKE2 agent 1
+192.168.0.75   # RKE2 agent 2
 
 # Servidor NFS (opcional)
 [nfs_server]

@@ -10,6 +10,12 @@
   roles:
     - rke2_server
 
+- name: Install RKE2 NODES
+  hosts: rke2_node
+  become: true
+  roles:
+    - rke2_node
+
 - name: Install RKE2 AGENT
   hosts: rke2_agent
   become: true
