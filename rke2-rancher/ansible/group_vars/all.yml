@@ -1,4 +1,4 @@
-
+# [ RANCHER ]
 # Dominio completo que va a utilizar el servidor.
 fqdn: "{{ lookup('env', 'FQDN') | default('rancher.example.com', true) }}"
 # Contraseña por defecto.
@@ -7,3 +7,18 @@ rancher_pass: "{{ lookup('env', 'RANCHERPASS') | default('changeme', true) }}"
 # Dirección IP del nodo principical/servidor de RKE2/Rancher.
 server_ip: 192.168.0.71
 
+# [ ARGOCD ]
+# FQDN para acceso HTTPS (UI / API)
+argocd_ingress_https: "{{ lookup('env', 'ARGOCD_INGRESS_HTTPS') | default('argocd.example.com', true) }}"
+# FQDN para acceso gRPC (CLI)
+argocd_ingress_grpc: "{{ lookup('env', 'ARGOCD_INGRESS_GRPC') | default('grpc-argocd.example.com', true) }}"
+# Password bcrypt para el usuario admin de ArgoCD
+# Para generar un nuevo password, ejecutar: htpasswd -nbBC 10 "" NUEVOPASS.
+# Valor por defecto generado para 'changeme'
+argocd_admin_password_hash: "$2y$10$rWyc4iVf7IEJSV3Gs4alQuKlImm8C6VQ3rdHiabnLsr6q4x1JVZD6"
+
+# [ MetalLB ]
+# IP o rango que usará MetalLB
+metallb_pool_range: "192.168.0.200-192.168.0.200"
+# Tiempo de espera en segundos luego de instalar MetalLB
+metallb_wait_seconds: 60

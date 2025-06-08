@@ -1,6 +1,6 @@
 # Ansible RKE2 + Rancher + NFS Deployment
 
-Este proyecto automatiza la instalación de un clúster RKE2 (3 servidor + 2 workers) y la instalación de Rancher, incluyendo un servidor NFS opcional para almacenamiento compartido.
+Este proyecto automatiza la instalación de un clúster RKE2 (3 servidores + 2 workers), la instalación de Rancher, un servidor NFS opcional para almacenamiento compartido, ArgoCD como motor de GitOPS y MetalLB para la provision de un LoadBalancer que funcione en una instalación Baremetal.
 
 ---
 
@@ -33,12 +33,8 @@ ansible_python_interpreter=/usr/bin/python3
 
 ## 📁 Variables globales
 
-En `group_vars/all.yml` podés definir:
-
-- `fqdn`: Nombre del host para Rancher (por defecto: `rancher.secura.net.ar`)
-- `server_ip`: IP del nodo server RKE2
-- `rancher_pass`: Password de bootstrap para Rancher (por defecto: `changeme`)
-
+En `group_vars/all.yml` podés definir las variables globales que se van a utilizar en el projecto.
+Cada una está comentada para su facil entendimiento.
 ---
 
 ## 🚀 Ejecución por pasos
@@ -73,6 +69,17 @@ ansible-playbook -i inventory playbook.yml --tags rancher -l rke2_server
 ansible-playbook -i inventory playbook.yml -l nfs_server
 ```
 
+### 6. Instalar **ArgoCD**
+
+```bash
+ansible-playbook -i inventory playbook.yml --tags argocd -l rke2_server
+```
+
+### 7. Instalar **MetalLB**
+
+```bash
+ansible-playbook -i inventory playbook.yml --tags metallb -l rke2_server
+```
 ---
 
 ## 🔖 Tags disponibles
@@ -80,11 +87,14 @@ ansible-playbook -i inventory playbook.yml -l nfs_server
 Podés usar `--tags` para ejecutar partes del playbook:
 
 - `common`
+- `python-k8s`
 - `rke2_server`
 - `rke2_node`
 - `rke2_agent`
 - `rancher`
 - `nfs_server`
+- `argocd`
+- `metallb`
 
 ---
 

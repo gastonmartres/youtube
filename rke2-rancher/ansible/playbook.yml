@@ -34,3 +34,15 @@
   roles:
     - common
     - nfs_server
+
+- name: Install ArgoCD
+  hosts: rke2_server
+  become: true
+  roles:
+    - argocd
+
+- name: Install MetalLB
+  hosts: rke2_server
+  become: true
+  roles:
+    - metallb

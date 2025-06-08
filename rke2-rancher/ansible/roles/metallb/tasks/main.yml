@@ -1,0 +1,56 @@
+- name: Set KUBECONFIG environment variable
+  tags: [metallb]
+  set_fact:
+    kubeconfig_path: "/etc/rancher/rke2/rke2.yaml"
+
+- name: Create MetalLB namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: metallb-system
+    state: present
+    kubeconfig: "{{ kubeconfig_path }}"
+  delegate_to: "{{ groups['rke2_server'][0] }}"
+  tags: [metallb]
+
+- name: Deploy MetalLB official manifests
+  ansible.builtin.command: >
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
+  delegate_to: "{{ groups['rke2_server'][0] }}"
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  tags: [metallb]
+
+- name: Wait {{ metallb_wait_seconds }} seconds for MetalLB pods to become ready
+  ansible.builtin.pause:
+    seconds: "{{ metallb_wait_seconds }}"
+  tags: [metallb]
+
+- name: Create MetalLB IPAddressPool
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: IPAddressPool
+      metadata:
+        name: local-pool
+        namespace: metallb-system
+      spec:
+        addresses:
+          - "{{ metallb_pool_range }}"
+    kubeconfig: "{{ kubeconfig_path }}"
+  delegate_to: "{{ groups['rke2_server'][0] }}"
+  tags: [metallb]
+
+- name: Create MetalLB L2Advertisement
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: L2Advertisement
+      metadata:
+        name: l2adv
+        namespace: metallb-system
+    kubeconfig: "{{ kubeconfig_path }}"
+  delegate_to: "{{ groups['rke2_server'][0] }}"
+  tags: [metallb]

@@ -23,6 +23,13 @@
       - chrony
     state: present
 
+- name: Ensure Python Kubernetes client is installed (for kubernetes.core)
+  ansible.builtin.pip:
+    name: kubernetes
+    executable: pip3
+  become: true
+  tags: [python-k8s, common]
+
 - name: Set timezone to UTC (Etc/UTC)
   timezone:
     name: Etc/UTC
